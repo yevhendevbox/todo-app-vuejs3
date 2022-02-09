@@ -4,9 +4,7 @@
       <Button label="Add note +" class="p-button-rounded p-button-success" @click="addNote"/>
     </div>
   <div class="notes-wrap">
-    <Note v-if="!notes.length" />
     <Note
-      v-else
       v-for="note in notes"
       :key="note.id"
       :isActive="note.isActive"
@@ -29,16 +27,7 @@ export default defineComponent({
   data() {
     return {
       notes: [
-        {
-          id: 1,
-          text: "Some Dummy text for imitate the Note!",
-          isActive: true,
-        } as NoteType,
-        {
-          id: 2,
-          text: "One more note for today",
-          isActive: true,
-        } as NoteType,
+        { id: 1, text: "", isActive: false } as NoteType,
         // eslint-disable-next-line
       ] as Array<any>,
       title: "Add some Notes!",
@@ -48,19 +37,27 @@ export default defineComponent({
     Note,
     Button,
   },
+  mounted() {
+    if (localStorage.getItem("notes-list") as string) {
+      this.notes = JSON.parse(localStorage.getItem("notes-list") as string);
+    }
+  },
   methods: {
     changeNoteState(id: number, newNote: string) {
       const note = this.notes.find((el) => el.id === id);
       note.isActive = !note.isActive;
       note.text = newNote;
+      this.saveNotesToLocalStorage();
     },
     editNote(id: number) {
       const note = this.notes.find((el) => el.id === id);
       note.isActive = !note.isActive;
+      this.saveNotesToLocalStorage();
     },
     deleteNote(id: number) {
       const index = this.notes.findIndex((el) => el.id === id);
       this.notes.splice(index, 1);
+      this.saveNotesToLocalStorage();
     },
     addNote() {
       if (!this.notes[this.notes.length - 1].isActive) return;
@@ -69,6 +66,11 @@ export default defineComponent({
         text: "",
         isActive: false,
       } as NoteType);
+      this.saveNotesToLocalStorage();
+    },
+    saveNotesToLocalStorage() {
+      const parsed = JSON.stringify(this.notes);
+      localStorage.setItem("notes-list", parsed);
     },
   },
 });

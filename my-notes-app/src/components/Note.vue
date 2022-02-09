@@ -17,7 +17,7 @@
                 >{{!text ? newNote : text}}</div>
 
                 <div class="note-footer">
-                  <p class="char-counter">{{ !text ? characterCounter : text.length }} / 200</p>
+                  <p class="char-counter">{{ !isActive ? characterCounter : text.length }} / 200</p>
                   <Button icon="pi pi-check" class="p-button-rounded p-button-success" :disabled="isActive || !newNote.length" @click="saveNote"/>
                 </div>
             </template>
